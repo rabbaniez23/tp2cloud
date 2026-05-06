@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend-musik
-        image: naufal2410946/frontend-musik:latest
+        image: nrrbni/frontend-musik:latest
         ports:
         - containerPort: 80
 ---

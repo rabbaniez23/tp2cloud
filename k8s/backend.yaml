@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend-musik
-        image: naufal2410946/backend-musik:latest
+        image: nrrbni/backend-musik:latest
         ports:
         - containerPort: 5000
         env:

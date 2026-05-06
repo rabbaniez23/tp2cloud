@@ -43,6 +43,9 @@ pipeline {
                         sh "kubectl --kubeconfig=${KUBECONFIG} apply -f k8s/frontend.yaml"
                         sh "kubectl --kubeconfig=${KUBECONFIG} apply -f k8s/ingress.yaml"
                         
+                        // Menampilkan info ingress
+                        sh "kubectl --kubeconfig=${KUBECONFIG} get ingress musik-ingress"
+                        
                         // Force update agar image terbaru ditarik (rolling restart)
                         sh "kubectl --kubeconfig=${KUBECONFIG} rollout restart deployment backend-musik"
                         sh "kubectl --kubeconfig=${KUBECONFIG} rollout restart deployment frontend-musik"
