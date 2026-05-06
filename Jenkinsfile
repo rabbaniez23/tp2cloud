@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_USER = 'nrrbni' // Username Docker Hub dari screenshot
+        DOCKER_HUB_USER = 'nrrbni' // Username Docker Hub
         IMAGE_BACKEND = "${DOCKER_HUB_USER}/backend-musik"
         IMAGE_FRONTEND = "${DOCKER_HUB_USER}/frontend-musik"
     }
@@ -10,26 +10,26 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout dilakukan otomatis oleh Jenkins jika menggunakan Pipeline dari SCM
-                echo 'Checking out code...'
+                // Menarik kode dari GitHub publik
+                git branch: 'main', url: 'https://github.com/rabbaniez23/tp2cloud.git'
             }
         }
 
         stage('Build & Push') {
             steps {
                 script {
-                    // Login ke Docker Hub (Pastikan sudah ada credentials di Jenkins dengan ID 'dockerhub-login')
+                    // Login ke Docker Hub menggunakan perintah 'bat' (karena Jenkins di Windows)
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-login', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                        sh "echo $PASS | docker login -u $USER --password-stdin"
+                        bat "docker login -u %USER% -p %PASS%"
                     }
 
                     // Build & Push Backend
-                    sh "docker build -t ${IMAGE_BACKEND}:latest ./backend"
-                    sh "docker push ${IMAGE_BACKEND}:latest"
+                    bat "docker build -t ${IMAGE_BACKEND}:latest ./backend"
+                    bat "docker push ${IMAGE_BACKEND}:latest"
 
                     // Build & Push Frontend
-                    sh "docker build -t ${IMAGE_FRONTEND}:latest ./frontend"
-                    sh "docker push ${IMAGE_FRONTEND}:latest"
+                    bat "docker build -t ${IMAGE_FRONTEND}:latest ./frontend"
+                    bat "docker push ${IMAGE_FRONTEND}:latest"
                 }
             }
         }
@@ -37,18 +37,18 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deploy ke AKS (Pastikan sudah ada credentials file Kubeconfig di Jenkins dengan ID 'kubeconfig-aks')
+                    // Deploy ke AKS (Menggunakan 'bat')
                     withCredentials([file(credentialsId: 'kubeconfig-aks', variable: 'KUBECONFIG')]) {
-                        sh "kubectl --kubeconfig=${KUBECONFIG} apply -f k8s/backend.yaml"
-                        sh "kubectl --kubeconfig=${KUBECONFIG} apply -f k8s/frontend.yaml"
-                        sh "kubectl --kubeconfig=${KUBECONFIG} apply -f k8s/ingress.yaml"
+                        bat "kubectl --kubeconfig=\"${KUBECONFIG}\" apply -f k8s/backend.yaml"
+                        bat "kubectl --kubeconfig=\"${KUBECONFIG}\" apply -f k8s/frontend.yaml"
+                        bat "kubectl --kubeconfig=\"${KUBECONFIG}\" apply -f k8s/ingress.yaml"
                         
-                        // Menampilkan info ingress
-                        sh "kubectl --kubeconfig=${KUBECONFIG} get ingress musik-ingress"
+                        // Menampilkan info ingress di log Jenkins
+                        bat "kubectl --kubeconfig=\"${KUBECONFIG}\" get ingress musik-ingress"
                         
-                        // Force update agar image terbaru ditarik (rolling restart)
-                        sh "kubectl --kubeconfig=${KUBECONFIG} rollout restart deployment backend-musik"
-                        sh "kubectl --kubeconfig=${KUBECONFIG} rollout restart deployment frontend-musik"
+                        // Force update agar image terbaru ditarik ke AKS (rolling restart)
+                        bat "kubectl --kubeconfig=\"${KUBECONFIG}\" rollout restart deployment backend-musik"
+                        bat "kubectl --kubeconfig=\"${KUBECONFIG}\" rollout restart deployment frontend-musik"
                     }
                 }
             }
