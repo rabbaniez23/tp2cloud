@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: musik-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /api(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-musik-service
+            port:
+              number: 5000
+      - path: /()(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-musik-service
+            port:
+              number: 80

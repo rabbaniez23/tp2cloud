@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koleksi Musik Indonesia</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="container">
+        <header>
+            <h1 id="katalog-title">Memuat Koleksi...</h1>
+            <div class="owner-info">
+                <span class="badge" id="owner-name">Nama: -</span>
+                <span class="badge" id="owner-nim">NIM: -</span>
+            </div>
+            <div class="backend-setting">
+                <input type="text" id="backend-url" value="http://localhost:5000" placeholder="URL Backend">
+                <button id="btn-refresh" class="btn">Muat Ulang</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="add-item-card">
+                <h2>Tambah Koleksi Musik</h2>
+                <div class="input-group">
+                    <input type="text" id="new-item" placeholder="Contoh: Tulus - Hati-Hati di Jalan">
+                    <button id="btn-add" class="btn btn-primary">Tambahkan</button>
+                </div>
+                <p id="message" class="message"></p>
+            </div>
+
+            <div class="katalog-list">
+                <h2>Daftar Lagu</h2>
+                <ul id="item-list">
+                    <!-- Items from JSON will be injected here -->
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-musik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-musik
+  template:
+    metadata:
+      labels:
+        app: frontend-musik
+    spec:
+      containers:
+      - name: frontend-musik
+        image: naufal2410946/frontend-musik:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-musik-service
+spec:
+  selector:
+    app: frontend-musik
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP

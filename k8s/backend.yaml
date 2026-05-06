@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-musik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-musik
+  template:
+    metadata:
+      labels:
+        app: backend-musik
+    spec:
+      containers:
+      - name: backend-musik
+        image: naufal2410946/backend-musik:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: NAMA_PRAKTIKAN
+          value: "Naufal" # GANTI DENGAN NAMA KALIAN
+        - name: NIM_PRAKTIKAN
+          value: "2410946" # GANTI DENGAN NIM KALIAN
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-musik-service
+spec:
+  selector:
+    app: backend-musik
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: ClusterIP
